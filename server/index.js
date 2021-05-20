@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const userRoute = require("./routes/users");
+const authRoute = require("./routes/auth");
 
 const PORT = 5000;
 const app = express();
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", userRoute);
+app.use("/api/auth", authRoute);
 
 mongoose.connect(
   process.env.MONGO_URL,
