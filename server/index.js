@@ -18,19 +18,23 @@ app.use(helmet());
 app.use(morgan("common"));
 dotenv.config();
 
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_PASS}@cluster0.sn2gl.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    }
+  )
+  .then((res) => console.log("Database Connected!"))
+  .catch((err) => console.log(err));
+
 app.get("/", (req, res) => {
   res.send("Welcome to Social Media Web Application");
 });
 
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
-
-mongoose.connect(
-  process.env.MONGO_URL,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => {
-    console.log("Connected to Database");
-  }
-);
 
 app.listen(`${PORT}`, () => console.log(`Server is listening to ${PORT}`));
