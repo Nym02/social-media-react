@@ -59,4 +59,20 @@ router.delete("/:id", async (req, res) => {
     });
   }
 });
+
+//follow a user
+
+router.put("/:id/follow", async (req, res) => {
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+    } catch (error) {}
+  } else {
+    res.status(403).json({
+      error: "You can not follow yourself",
+    });
+  }
+});
+
 module.exports = router;
