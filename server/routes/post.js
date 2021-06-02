@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Post = require("../model/postSchema");
+const { route } = require("./users");
 //create post
 
 router.post("/", async (req, res) => {
@@ -60,17 +61,18 @@ router.delete("/:id", async (req, res) => {
 router.put("/:id/like", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post.likes.inclueds(req.body.userId)) {
+    if (!post.likes.includes(req.body.userId)) {
       await post.updateOne({ $push: { likes: req.body.userId } });
       res.status(200).json({
         message: "Post has been liked",
       });
-    } else {
+    } else if (post.likes.includes(req.body.userId)) {
       await post.updateOne({ $pull: { likes: req.body.userId } });
       res.status(200).json({
         message: "Post has been unliked",
       });
     }
+    res.send(post);
   } catch (err) {
     res.status(400).json({
       error: "Post does not exists anymore",
@@ -78,6 +80,16 @@ router.put("/:id/like", async (req, res) => {
   }
 });
 //get a post
+
+router.get("/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 // get timeline posts
 
 module.exports = router;
